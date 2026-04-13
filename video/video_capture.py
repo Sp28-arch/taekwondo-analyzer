@@ -1,15 +1,26 @@
 import cv2
 
-class VideoCapture:
-    def __init__(self, source=0):
-        self.cap = cv2.VideoCapture(source)
+cap = cv2.VideoCapture(0)
 
-    def get_frame(self):
-        ret, frame = self.cap.read()
-        return frame if ret else None
+if not cap.isOpened():
+    print("Error: Could not open camera.")
+    exit()
 
-    def show(self, frame):
-        cv2.imshow("Taekwondo Analyzer", frame)
+while True:
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            exit()
+    ret, frame = cap.read()
+
+    if not ret:
+        print("Error: Failed to capture frame.")
+        break
+
+ 
+    cv2.imshow("Taekwondo Analysis - Camera Feed", frame)
+
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release the camera and close windows
+cap.release()
+cv2.destroyAllWindows()
