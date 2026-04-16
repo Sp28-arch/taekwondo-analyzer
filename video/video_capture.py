@@ -1,49 +1,53 @@
 import cv2
 
 def start_camera():
-    cap = cv2.VideoCapture(0)
+   
+   #open webcam
+   
+    cam=cv2.VideoCapture(0)
 
-    if not cap.isOpened():
-        print("Error: Could not open camera.")
-        return
 
-    ret, prev_frame = cap.read()
-    if not ret:
-        print("Error: Failed to capture initial frame.")
-        return
 
-    prev_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
+    # check if the webcam is opened correctly
+    if not cam.isOpened():
+      print("Cannot open camera")
+      exit()
+   
 
+   #Display the video feed
     while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+        ret, frame = cam.read()
+       
 
+       #If no frame is captured, break the loop
+        if not ret:
+           break
+
+        
+           #convert the frame to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        diff = cv2.absdiff(prev_gray, gray)
 
-        blur = cv2.GaussianBlur(diff, (5, 5), 0)
-        _, thresh = cv2.threshold(blur, 25, 255, cv2.THRESH_BINARY)
 
-        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        for contour in contours:
-            if cv2.contourArea(contour) < 500:
-                continue
 
-            
-            x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(frame, "Movement Detected", (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        #Display the frames
+        cv2.imshow('Webcam', gray)
 
-        cv2.imshow("Taekwondo Motion Analysis", frame)
-
-        prev_gray = gray
-
+        #Exit the webcam feed when 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
+           
             break
 
-    cap.release()
+
+
+    #Release the webcam and close all windows
+    cam.release()
     cv2.destroyAllWindows()
+
+
+
+        
+        
+        
+       
